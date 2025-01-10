@@ -38,8 +38,12 @@ let gameOver = false;
 let score = 0;
 
 //sounds
+let pointSound = new Audio("./sounds/sfx_point.wav");
+let deathSound = new Audio("./sounds/sfx_die.wav");
 let wingSound = new Audio("./sounds/sfx_wing.wav");
 let hitSound = new Audio("./sounds/sfx_hit.wav");
+let bgm = new Audio("./sounds/bgm.mp3")
+bgm.loop = true;
 
 //game over popup
 const gameOverPopup = document.querySelector(".gameover")
@@ -78,6 +82,7 @@ window.onload = function () {
   setInterval(placePillars, 1500); //1.5 seconds
   setInterval(animateBat, 40); //1/10 seconds
   document.addEventListener("keydown", moveBat);
+  bgm.play();
 };
 let lastTimestamp = undefined;
 
@@ -132,9 +137,12 @@ function update(timestamp) {
       if (!pillar.passed && bat.x > pillar.x + pillar.width) {
         score += 0.5; //each pillar is 2 pillars there-for .5 increments
         pillar.passed = true;
+        pointSound.play();
       }
       if (detectCollision(bat, pillar)) {
+        hitSound.play();
         gameOver = true;
+        deathSound.play();
         gameOverPopup.style.display = "block"
       }
     }
@@ -150,6 +158,10 @@ function update(timestamp) {
   context.font = "45px sans-serif";
   context.fillText(score, 5, 45);
 
+  if (gameOver) {
+    bgm.pause();
+    bgm.currentTime = 3;
+  }
 
   requestAnimationFrame(update);
 }
@@ -191,6 +203,9 @@ function placePillars() {
 
 function moveBat(e) {
   if (e.code == "Space" || e.code == "ArrowUp") {
+    if (bgm.paused) {
+    bgm.play();
+    }
     wingSound.play();
     //jump
     velocityY = -3.5;
