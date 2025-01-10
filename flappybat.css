@@ -1,24 +1,22 @@
 body {
-    font-family: 'Courier New', Courier, monospace;
-    text-align: center;
+  font-family: "Courier New", Courier, monospace;
+  text-align: center;
 }
 
 #board {
-    /* background-color: skyblue; */
-    background-image: url("./images/cave-bkground.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center center;
+  /* background-color: skyblue; */
+  background-image: url("./images/cave-bkground.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
 }
 
-
 div.gameover {
-    display: none;
-    position: absolute;
-    top: 35%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 25rem 19rem;
-
+  display: none;
+  position: absolute;
+  top: 35%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 25rem 19rem;
 }
