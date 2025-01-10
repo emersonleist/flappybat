@@ -5,9 +5,8 @@ body {
 
 #board {
     /* background-color: skyblue; */
-    background-image: url("./images/cave.png");
-}
-
-#batImg {
-    image
+    background-image: url("./images/cave-bkground.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
