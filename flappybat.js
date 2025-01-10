@@ -5,8 +5,8 @@ let boardHeight = 850;
 let context;
 
 //bat
-let batWidth = 54;
-let batHeight = 44;
+let batWidth = 84;
+let batHeight = 54;
 let batX = boardWidth / 8;
 let batY = boardHeight / 2;
 let batImgs = [];
@@ -30,12 +30,21 @@ let topPillarImg;
 let bottomPillarImg;
 
 //game physics
-let velocityX = -1; //moving left speed
-let velocityY = 0; //bird jump speed
-let gravity = 0.2; //downward gravity
+let velocityX = -1; //pipes moving left speed
+let velocityY = 2; //bird jump speed
+let gravity = 0.05; //downward gravity
 
 let gameOver = false;
-let score = 0
+let score = 0;
+
+//sounds
+let wingSound = new Audio("./sounds/sfx_wing.wav");
+let hitSound = new Audio("./sounds/sfx_hit.wav");
+
+//game over popup
+const gameOverPopup = document.querySelector(".gameover")
+const gameOverButton = document.querySelector(".gameover button")
+
 
 window.onload = function () {
   board = document.getElementById("board");
@@ -67,63 +76,83 @@ window.onload = function () {
 
   requestAnimationFrame(update);
   setInterval(placePillars, 1500); //1.5 seconds
-  setInterval(animateBat, 100); //1/10 seconds
+  setInterval(animateBat, 40); //1/10 seconds
   document.addEventListener("keydown", moveBat);
 };
+let lastTimestamp = undefined;
 
-function update() {
-    if (gameOver) {
-        return;
-    }
-  context.clearRect(0, 0, board.width, board.height);
+function update(timestamp) {
+  const sixtyFPS = 1000 / 60;
 
-  //bat
-  velocityY += gravity;
-  // bat.y += velocityY;
-  bat.y = Math.max(bat.y + velocityY, 0); // apply gravity and limit height
-  // context.drawImage(batImg, bat.x, bat.y, bat.width, bat.height);
-  context.drawImage(batImgs[batImgsIndex], bat.x, bat.y, bat.width, bat.height);
-  // batImgsIndex++; //to go next frame
-  // batImgsIndex %= batImgs.length; //circle back frames max is 8 currently
-
-
-  if (bat.y > board.height) {
-    gameOver = true;
+  if (lastTimestamp === undefined) {
+    lastTimestamp = timestamp;
   }
 
-  //pillars
-  for (let i = 0; i < pillarArray.length; i++) {
-    let pillar = pillarArray[i];
-    pillar.x += velocityX;
+  const updateCanvasKeyframe = timestamp - sixtyFPS > lastTimestamp;
+
+  console.log("update function running");
+  console.log(timestamp);
+  if (gameOver) {
+    return; // don't run update anymore, ever.
+  }
+
+  if (updateCanvasKeyframe) {
+    context.clearRect(0, 0, board.width, board.height);
+
+    //bat
+    velocityY += gravity;
+    // bat.y += velocityY;
+    bat.y = Math.max(bat.y + velocityY, 0); // apply gravity and limit height
+    // context.drawImage(batImg, bat.x, bat.y, bat.width, bat.height);
     context.drawImage(
-      pillar.img,
-      pillar.x,
-      pillar.y,
-      pillar.width,
-      pillar.height
+      batImgs[batImgsIndex],
+      bat.x,
+      bat.y,
+      bat.width,
+      bat.height
     );
-    if (!pillar.passed && bat.x> pillar.x + pillar.width) {
-        score += 0.5; //each pillar is 2 pillars there-for .5 increments 
-        pillar.passed = true;
+    // batImgsIndex++; //to go next frame
+    // batImgsIndex %= batImgs.length; //circle back frames max is 8 currently
+
+    if (bat.y > board.height) {
+      gameOver = true;
     }
-    if (detectCollision(bat, pillar)) {
+
+    //pillars
+    for (let i = 0; i < pillarArray.length; i++) {
+      let pillar = pillarArray[i];
+      pillar.x += velocityX;
+      context.drawImage(
+        pillar.img,
+        pillar.x,
+        pillar.y,
+        pillar.width,
+        pillar.height
+      );
+      if (!pillar.passed && bat.x > pillar.x + pillar.width) {
+        score += 0.5; //each pillar is 2 pillars there-for .5 increments
+        pillar.passed = true;
+      }
+      if (detectCollision(bat, pillar)) {
         gameOver = true;
+        gameOverPopup.style.display = "block"
+        // gameOver()
+        // unhide the gameover div
+        
+      }
     }
   }
 
   //clear pillars passed
-  while (pillarArray.length > 0&& pillarArray[0].x < -pillarWidth) {
+  while (pillarArray.length > 0 && pillarArray[0].x < -pillarWidth) {
     pillarArray.shift(); //removes first element in array
   }
 
   //score
-  context.fillStyle = "white"
-  context.font = "45px sans-serif"
+  context.fillStyle = "white";
+  context.font = "45px sans-serif";
   context.fillText(score, 5, 45);
 
-  if (gameOver) {
-    context.fillText("GAME OVER", 5, 90);
-  }
 
   requestAnimationFrame(update);
 }
@@ -134,9 +163,9 @@ function animateBat() {
 }
 
 function placePillars() {
-    if(gameOver) {
-        return;
-    }
+  if (gameOver) {
+    return;
+  }
   let randomPillarY =
     pillarY - pillarHeight / 4 - Math.random() * (pillarHeight / 2);
   let openingSpace = board.height / 4;
@@ -165,24 +194,46 @@ function placePillars() {
 
 function moveBat(e) {
   if (e.code == "Space" || e.code == "ArrowUp") {
+    wingSound.play();
     //jump
-    velocityY = -6;
+    velocityY = -3.5;
 
     //reset game
-    if (gameOver) {
-        bat.y = batY;
-        pillarArray = [];
-        score = 0;
-        gameOver = false;
-    }
+    // if (gameOver) {
+    //     bat.y = batY;
+    //     pillarArray = [];
+    //     score = 0;
+    //     gameOver = false;
+    // }
   }
 }
 
-function detectCollision(a, b) {
+function detectCollision(bat, pillar) {
+  // Define a margin to shrink the bat's collision box
+  const marginX = 20; // Allow 20 pixels closer horizontally
+  const marginY = 20; // Allow 20 pixels closer vertically
+
+  // Adjust the bat's collision boundaries by reducing its effective size
   return (
-    a.x < b.x + b.width &&
-    a.x + a.width > b.x &&
-    a.y < b.y + b.height &&
-    a.y + a.height > b.y
+    bat.x + marginX < pillar.x + pillar.width &&
+    bat.x + bat.width - marginX > pillar.x &&
+    bat.y + marginY < pillar.y + pillar.height &&
+    bat.y + bat.height - marginY > pillar.y
   );
 }
+
+
+function resetGame() {
+  gameOver = false; // turn the game back on
+  //   might need to reset some things... pillars.
+  bat.y = batY;
+  pillarArray = [];
+  score = 0;
+  requestAnimationFrame(update);
+  // hide the gameover div
+  
+}
+
+const resetButton = document.getElementById("reset");
+
+resetButton.addEventListener("click", resetGame);

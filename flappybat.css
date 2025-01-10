@@ -10,3 +10,12 @@ body {
     background-repeat: no-repeat;
     background-position: center center;
 }
+
+
+div.gameover {
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
