@@ -136,9 +136,6 @@ function update(timestamp) {
       if (detectCollision(bat, pillar)) {
         gameOver = true;
         gameOverPopup.style.display = "block"
-        // gameOver()
-        // unhide the gameover div
-        
       }
     }
   }
@@ -230,10 +227,8 @@ function resetGame() {
   pillarArray = [];
   score = 0;
   requestAnimationFrame(update);
-  // hide the gameover div
-  
+  // 
+  gameOverPopup.style.display = "none"
 }
 
-const resetButton = document.getElementById("reset");
-
-resetButton.addEventListener("click", resetGame);
+gameOverButton.addEventListener("click", resetGame);
