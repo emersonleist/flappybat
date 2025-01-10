@@ -21,7 +21,7 @@ let bat = {
 
 //cave pillars
 let pillarArray = [];
-let pillarWidth = 64;
+let pillarWidth = 84;
 let pillarHeight = 512;
 let pillarX = boardWidth;
 let pillarY = 0;
@@ -73,10 +73,10 @@ window.onload = function () {
   }
 
   topPillarImg = new Image();
-  topPillarImg.src = "./images/toppipe.png";
+  topPillarImg.src = "./images/toppillar.png";
 
   bottomPillarImg = new Image();
-  bottomPillarImg.src = "./images/bottompipe.png";
+  bottomPillarImg.src = "./images/bottompillar.png";
 
   requestAnimationFrame(update);
   setInterval(placePillars, 1500); //1.5 seconds
