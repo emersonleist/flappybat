@@ -18,5 +18,5 @@ div.gameover {
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: rgba(0, 0, 0, 0.5);
-  padding: 24.2rem 19rem;
+  padding: 10rem 10rem;
 }
