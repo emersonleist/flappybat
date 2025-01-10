@@ -15,7 +15,10 @@ body {
 div.gameover {
     display: none;
     position: absolute;
-    top: 50%;
+    top: 35%;
     left: 50%;
     transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 25rem 19rem;
+
 }

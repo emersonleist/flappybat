@@ -66,7 +66,7 @@ window.onload = function () {
   // batImg.onload = function () {
   //   context.drawImage(batImg, bat.x, bat.y, bat.width, bat.height);
   // };
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 6; i++) {
     let batImg = new Image();
     batImg.src = `./images/frames/bat${i}.gif`;
     batImgs.push(batImg);
@@ -121,6 +121,8 @@ function update(timestamp) {
 
     if (bat.y > board.height) {
       gameOver = true;
+      deathSound.play();
+      gameOverPopup.style.display = "block"
     }
 
     //pillars
