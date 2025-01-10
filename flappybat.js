@@ -42,13 +42,12 @@ let pointSound = new Audio("./sounds/sfx_point.wav");
 let deathSound = new Audio("./sounds/sfx_die.wav");
 let wingSound = new Audio("./sounds/sfx_wing.wav");
 let hitSound = new Audio("./sounds/sfx_hit.wav");
-let bgm = new Audio("./sounds/bgm.mp3")
+let bgm = new Audio("./sounds/bgm.mp3");
 bgm.loop = true;
 
 //game over popup
-const gameOverPopup = document.querySelector(".gameover")
-const gameOverButton = document.querySelector(".gameover button")
-
+const gameOverPopup = document.querySelector(".gameover");
+const gameOverButton = document.querySelector(".gameover button");
 
 window.onload = function () {
   board = document.getElementById("board");
@@ -122,7 +121,7 @@ function update(timestamp) {
     if (bat.y > board.height) {
       gameOver = true;
       deathSound.play();
-      gameOverPopup.style.display = "block"
+      gameOverPopup.style.display = "block";
     }
 
     //pillars
@@ -145,7 +144,7 @@ function update(timestamp) {
         hitSound.play();
         gameOver = true;
         deathSound.play();
-        gameOverPopup.style.display = "block"
+        gameOverPopup.style.display = "block";
       }
     }
   }
@@ -206,7 +205,7 @@ function placePillars() {
 function moveBat(e) {
   if (e.code == "Space" || e.code == "ArrowUp") {
     if (bgm.paused) {
-    bgm.play();
+      bgm.play();
     }
     wingSound.play();
     //jump
@@ -236,7 +235,6 @@ function detectCollision(bat, pillar) {
   );
 }
 
-
 function resetGame() {
   gameOver = false; // turn the game back on
   //   might need to reset some things... pillars.
@@ -244,8 +242,8 @@ function resetGame() {
   pillarArray = [];
   score = 0;
   requestAnimationFrame(update);
-  // 
-  gameOverPopup.style.display = "none"
+  //
+  gameOverPopup.style.display = "none";
 }
 
 gameOverButton.addEventListener("click", resetGame);
