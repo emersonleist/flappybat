@@ -11,6 +11,9 @@ body {
     background-position: center center;
 }
 
+@media screen and (max-width: 40.8rem) {
+
+}
 
 div.gameover {
     display: none;
